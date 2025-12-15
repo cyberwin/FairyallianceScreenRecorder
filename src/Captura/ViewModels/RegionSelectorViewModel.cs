@@ -48,9 +48,9 @@ namespace Captura.ViewModels
 
         public static Dictionary<InkCanvasEditingMode, string> Tools { get; } = new Dictionary<InkCanvasEditingMode, string>
         {
-            [InkCanvasEditingMode.None] = "Pointer",
-            [InkCanvasEditingMode.Ink] = "Pencil",
-            [InkCanvasEditingMode.EraseByPoint] = "Eraser",
+            [InkCanvasEditingMode.None] = "鼠标Pointer",
+            [InkCanvasEditingMode.Ink] = "画笔Pencil",
+            [InkCanvasEditingMode.EraseByPoint] = "擦除Eraser",
             [InkCanvasEditingMode.EraseByStroke] = "Stroke Eraser"
         };
 

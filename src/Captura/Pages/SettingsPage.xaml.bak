@@ -66,13 +66,8 @@
 	 <!-- 新增按钮 -->
              <captura:ModernButton 
         Content="东方仙盟鼠标聚焦"
-        IconData="{Binding Icons.VideoFile, Source={StaticResource ServiceLocator}}"
+        IconData="{Binding Icons.Mouse, Source={StaticResource ServiceLocator}}"
         CommandParameter="/Pages/CyberWin_LensSettingsPage.xaml"/>
-
-
-                <captura:ModernButton Content="教程动画AI"
-                        IconData="{Binding Icons.Video, Source={StaticResource ServiceLocator}}"
-                        CommandParameter="/Pages/CyberWin_PageTurnSettings.xaml"/>
 
             </WrapPanel>
         </ScrollViewer>
