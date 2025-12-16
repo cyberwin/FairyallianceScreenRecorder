@@ -80,6 +80,10 @@
                     <ComboBoxItem Content="圆角矩形" Tag="圆角矩形"/>
                     <ComboBoxItem Content="五角星" Tag="五角星"/>
                     <ComboBoxItem Content="心形" Tag="心形"/>
+                    <ComboBoxItem Content="六边形" Tag="六边形"/>
+                    <ComboBoxItem Content="钻石" Tag="钻石"/>
+                    <ComboBoxItem Content="三角形" Tag="三角形"/>
+                    <ComboBoxItem Content="3D圆形" Tag="3D圆形"/>
                 </ComboBox>
             </StackPanel>
 
