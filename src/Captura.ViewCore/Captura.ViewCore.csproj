@@ -1,9 +1,11 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
   <PropertyGroup>
     <TargetFramework>net472</TargetFramework>
+    <Platforms>AnyCPU;x86</Platforms>
   </PropertyGroup>
   <ItemGroup>
     <ProjectReference Include="..\Captura.Core\Captura.Core.csproj" />
+    <ProjectReference Include="..\CyberWin.CSHARP.YNWLZC.FairyAllianceVOS\CyberWin.CSHARP.YNWLZC.FairyAllianceVOS.csproj" />
     <ProjectReference Include="..\Screna\Screna.csproj" />
   </ItemGroup>
   <ItemGroup>

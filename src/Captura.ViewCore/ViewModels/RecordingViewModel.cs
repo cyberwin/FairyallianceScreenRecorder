@@ -36,6 +36,13 @@ namespace Captura.ViewModels
         public ICommand RecordCommand { get; }
         public ICommand PauseCommand { get; }
 
+        public void 未来之窗清空画笔换鼠标命令()
+        {
+          //  _videoSourcesViewModel.
+           // ClearAllDrawingsCommand
+        }
+        public ICommand 未来之窗鼠标换画笔命令 { get; }
+
         public RecordingViewModel(RecordingModel RecordingModel,
             Settings Settings,
             TimerModel TimerModel,
@@ -72,7 +79,9 @@ namespace Captura.ViewModels
                     .Audio
                     .ObserveProperty(M => M.RecordSpeaker)
             }
-            .CombineLatest(M => M[0] || M[1]);            
+            .CombineLatest(M => M[0] || M[1]);
+
+            
 
             RecordCommand = new[]
                 {
@@ -142,6 +151,7 @@ namespace Captura.ViewModels
             {
                 _syncContext.Run(async () => await StopRecording(), true);
             };
+ 
         }
 
         async void OnRecordExecute()
