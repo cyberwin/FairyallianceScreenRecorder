@@ -5,6 +5,7 @@ using Captura.Video;
 using Captura.Webcam;
 using Captura.Windows.Gdi;
 using Captura.Windows.MediaFoundation;
+//using Captura.Windows.Capture;
 
 namespace Captura.Windows
 {
@@ -24,6 +25,23 @@ namespace Captura.Windows
             Binder.Bind<IClipboardService, ClipboardService>();
             Binder.Bind<IImagingSystem, DrawingImagingSystem>();
             Binder.Bind<IWebCamProvider, WebcamProvider>();
+
+            //2025-11-13
+            // 在Load方法中添加
+          //  Binder.BindSingleton<CyberWin_MouseLensViewModel>();
+        //    Binder.Bind<CyberWin_MouseLensProvider>();
+            // 在WindowsModule的Load方法中
+          //  Binder.Bind<CyberWin_MouseLensProvider>(() => new CyberWin_MouseLensProvider(ServiceProvider.Get<IPreviewWindow>()));
+
+            // 正确注册鼠标透镜服务
+            /*
+            Binder.Bind<CyberWin_MouseLensProvider>(() =>
+                new CyberWin_MouseLensProvider(
+                    ServiceProvider.Get<IPreviewWindow>(),
+                    null // 使用默认的cursorPositionFunc
+                )
+            );
+            */
 
             foreach (var audioItem in MfAudioItem.Items)
             {

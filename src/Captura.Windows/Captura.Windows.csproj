@@ -2,20 +2,31 @@
   <PropertyGroup>
     <TargetFramework>net472</TargetFramework>
     <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
+    <Platforms>AnyCPU;x86</Platforms>
   </PropertyGroup>
   <ItemGroup>
-    <ProjectReference Include="..\Captura.Base\Captura.Base.csproj" />
-  </ItemGroup>
-  <ItemGroup>
+    <Reference Include="Captura.Core">
+      <HintPath>..\Captura\bin\wlzc\Captura.Core.dll</HintPath>
+    </Reference>
+    <Reference Include="Captura.ViewCore">
+      <HintPath>..\Captura\bin\wlzc\Captura.ViewCore.dll</HintPath>
+    </Reference>
+    <Reference Include="CyberWin.CSHARP.YNWLZC.FairyAllianceVOS">
+      <HintPath>..\Captura.Core\bin\x86\Release\net472\CyberWin.CSHARP.YNWLZC.FairyAllianceVOS.dll</HintPath>
+    </Reference>
     <Reference Include="System.Windows.Forms" />
   </ItemGroup>
   <ItemGroup>
     <PackageReference Include="MediaFoundation" Version="3.1.0" />
     <PackageReference Include="Ookii.Dialogs.WindowsForms" Version="1.0.0" />
     <PackageReference Include="DirectShowLib" Version="1.0.0" />
+    <PackageReference Include="ReactiveProperty" Version="6.1.3" />
     <PackageReference Include="SharpDX.Direct2D1" Version="4.2.0" />
     <PackageReference Include="SharpDX.Direct3D11" Version="4.2.0" />
     <PackageReference Include="SharpDX.Direct3D9" Version="4.2.0" />
     <PackageReference Include="SharpDX.MediaFoundation" Version="4.2.0" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\Captura.Base\Captura.Base.csproj" />
   </ItemGroup>
 </Project>
