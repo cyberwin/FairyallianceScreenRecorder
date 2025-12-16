@@ -1,9 +1,21 @@
 ﻿using System;
 using System.Diagnostics;
+using System.Drawing.Imaging;
+using System.Drawing;
+using System.Runtime.InteropServices;
 using System.Threading;
 using System.Threading.Tasks;
 using Captura.Audio;
 using Captura.Models;
+using Captura.Windows.Gdi;
+using CyberWin.CSHARP.YNWLZC.FairyAllianceVOS.CyberPHP.CyberWinPC.Helper.Loger;
+using Captura.Windows.未来之窗;
+using System.Runtime;
+using CyberWin.CSHARP.YNWLZC.FairyAllianceVOS.CyberWin_Effect;
+using Captura.Windows;
+using SharpDX.Direct3D9;
+using CyberWin.CSHARP.YNWLZC.FairyAllianceVOS.CyberWinOSHandler;
+using CyberWin.CSHARP.YNWLZC.FairyAllianceVOS.CyberPHP;
 
 // ReSharper disable MethodSupportsCancellation
 
@@ -62,6 +74,9 @@ namespace Captura.Video
             _cancellationTokenSource = new CancellationTokenSource();
             _cancellationToken = _cancellationTokenSource.Token;
 
+            Log_Engine.write_logV2("Screna", "RecorderC","初始化");
+            未来之窗_属性触发处理.On未来之窗翻页模式变更 -= GlobalSettings_On未来之窗_特效_翻页_模式变更;
+
             if (FrameRate <= 0)
                 throw new ArgumentException("Frame Rate must be possitive", nameof(FrameRate));
 
@@ -85,6 +100,8 @@ namespace Captura.Video
             _sw = new Stopwatch();
 
             _recordTask = Task.Factory.StartNew(async () => await DoRecord(), TaskCreationOptions.LongRunning);
+
+         
         }
 
         async Task DoRecord()
@@ -93,6 +110,10 @@ namespace Captura.Video
             {
                 var frameInterval = TimeSpan.FromSeconds(1.0 / _frameRate);
                 _frameCount = 0;
+
+                Log_Engine.write_logV2("Screna", "Recorder", "DoRecord" );
+
+              
 
                 // Returns false when stopped
 
@@ -137,11 +158,45 @@ namespace Captura.Video
             }
         }
 
+
+       
+
         bool FrameWriter(TimeSpan Timestamp)
         {
             var editableFrame = _imageProvider.Capture();
 
             var frame = editableFrame.GenerateFrame(Timestamp);
+            Log_Engine.write_logV2("Screna", "Recorder", "FrameWriter"+ frame.ToString());
+
+            //   Log_Engine.write_logFrame("Screna", "Recorder", frame);
+            //  Log_Engine.write_logImg("Screna", "Recorder", frameBitmap);
+
+            // 假设已有一个 DrawingFrame 实例
+            // DrawingFrame drawingFrame = frame; // 替换为实际获取帧的逻辑
+            //  frame.
+
+            // 从 DrawingFrame 中获取 Bitmap
+            //  Bitmap frameBitmap = frame.Image as Bitmap;
+
+            if (Public_Var.东方仙盟特效_翻书.开始录制翻页 == true)
+            {
+                Public_Var.东方仙盟特效_翻书.开始录制翻页 = false;
+                未来之窗StartPageTurn(1);
+
+                _currentProgress = 0.01f;
+
+            }
+            
+
+            if (_currentProgress > 0f && _currentProgress < 1f)
+            {
+                frame = _pageTurnEffect.未来之窗ApplyEffect(frame);
+                Log_Engine.write_logV2("动画", "测试成功", "进度：" + _currentProgress.ToString());
+            }
+            else
+            {
+                Log_Engine.write_logV2("动画","测试失败","进度："+ _currentProgress.ToString());
+            }
 
             var success = AddFrame(frame);
 
@@ -183,6 +238,12 @@ namespace Captura.Video
         {
             try
             {
+                //
+                //Log_Engine.write_logV2("Screna", "WriteDuplicateFrame", "FrameWriter" + _frameCount.ToString());
+
+                //  _videoWriter.WriteFrame(Frame);
+                // 如果正在翻页，应用特效
+              
                 _videoWriter.WriteFrame(Frame);
 
                 ++_frameCount;
@@ -359,6 +420,147 @@ namespace Captura.Video
             _audioProvider?.Stop();
 
             _sw?.Stop();
+        }
+
+        private bool _isPageTurning = false; // 标记是否正在翻页
+
+        private System.Timers.Timer _pageTurnTimer; // 控制翻页进度
+        private static 未来之窗_BookPageTurnEffect _pageTurnEffect = new 未来之窗_BookPageTurnEffect();
+        private static 未来之窗Settings_特效_翻书 _cwSettings;
+
+        private float _currentProgress; // 当前翻页进度（0~1）
+        /// <summary>
+        /// 开始翻书特效（供UI按钮调用）
+        /// </summary>
+        /// <param name="direction">翻页方向：0=左→右，1=右→左</param>
+        public void 未来之窗StartPageTurn(int direction)
+        {
+            _cwSettings = Public_Var.东方仙盟特效_翻书;
+
+            // 检查配置：如果未启用翻书，直接返回
+            /*
+            if (!_cwSettings.开始录制翻页)
+            {
+                东方仙盟_LogHelper.WriteLog("翻书失败", "未启用翻书特效");
+                return;
+            }
+            */
+
+            // 初始化翻书参数（从配置读取，就是你UI设置的数值）
+            _pageTurnEffect.Direction = direction;
+            _pageTurnEffect.FoldRadius = _cwSettings.FoldSlider; // 褶皱程度
+            _pageTurnEffect.ShadowAlpha = _cwSettings.ShadowSlider; // 阴影深度
+            //重新
+            _pageTurnEffect.EaseType = EaseType.EaseInOutCubic;// _cwSettings.EaseComboBox; // 缓动类型
+            _pageTurnEffect.Progress = 0f; // 重置进度
+
+            _isPageTurning = true;
+
+            // 停止之前的定时器（防止重复翻页）
+            _pageTurnTimer?.Stop();
+
+            // 计算进度步长（按配置的时长匀速推进）
+            var durationMs = _cwSettings.DurationSlider * 1000; // 翻书时长（秒→毫秒）
+            var intervalMs = 30; // 每30ms更新一帧（约33fps，流畅不卡顿）
+            var totalFrames = durationMs / intervalMs;
+            var progressStep = 1f / totalFrames; // 每帧进度增量
+
+           _currentProgress = 0.01f;
+
+
+            // 启动定时器，控制翻页进度
+            _pageTurnTimer = new System.Timers.Timer(intervalMs);
+            _pageTurnTimer.Elapsed += (s, e) =>
+            {
+                // 线程安全：锁定变量，避免并发问题
+                lock (_syncLock)
+                {
+                    _pageTurnEffect.Progress += progressStep;
+
+                    // 翻页完成：停止定时器，标记结束
+                    if (_pageTurnEffect.Progress >= 1f)
+                    {
+                        _pageTurnEffect.Progress = 1f;
+                        _isPageTurning = false;
+                        _pageTurnTimer.Stop();
+                        东方仙盟_LogHelper.WriteLog(direction == 0 ? "左翻页" : "右翻页", "翻书完成");
+                    }
+                }
+            };
+            _pageTurnTimer.Start();
+
+            东方仙盟_LogHelper.WriteLog(direction == 0 ? "左翻页" : "右翻页", "翻书开始");
+        }
+
+        
+
+        /// <summary>
+        /// 全局笔刷模式变更时触发
+        /// </summary>
+        private void GlobalSettings_On未来之窗_特效_翻页_模式变更(object sender, EventArgs e)
+        {
+            UpdateBrushModeByGlobalSetting_特效_翻页_模式变更();
+        }
+
+        /// <summary>
+        /// 根据全局变量更新笔刷模式
+        /// </summary>
+        private void UpdateBrushModeByGlobalSetting_特效_翻页_模式变更()
+        {
+            switch (未来之窗_属性触发处理.未来之窗_东方仙盟_仙盟创梦_录像_特效翻页模式)
+            {
+                case "Y":
+                    // 笔刷模式：启用绘制
+                    // DurationSlider
+                    Log_Engine.write_logV2("动画", "改变1", "进度：" + 未来之窗_属性触发处理.未来之窗_东方仙盟_仙盟创梦_录像_特效翻页模式);
+                    Log_Engine.write_logV2("动画", "参数", "DurationSlider：" + Public_Var.东方仙盟特效_翻书.DurationSlider);
+
+
+                    Public_Var.东方仙盟特效_翻书.DurationSlider = 5;
+
+                    Log_Engine.write_logV2("动画", "参数", "DurationSlider：" + Public_Var.东方仙盟特效_翻书.DurationSlider);
+                    Log_Engine.write_logV2("动画", "参数", "FoldSlider：" + Public_Var.东方仙盟特效_翻书.FoldSlider);
+                    Log_Engine.write_logV2("动画", "参数", "ShadowSlider：" + Public_Var.东方仙盟特效_翻书.ShadowSlider);
+
+
+
+                    /*
+                     *      _pageTurnEffect.FoldRadius = _cwSettings.FoldSlider; // 褶皱程度
+            _pageTurnEffect.ShadowAlpha = _cwSettings.ShadowSlider; // 阴影深度
+            //重新
+                    */
+
+
+                    Log_Engine.write_logV2("动画", "改变1", "进度：" + 未来之窗_属性触发处理.未来之窗_东方仙盟_仙盟创梦_录像_特效翻页模式);
+
+
+                    //  东方仙盟_LogHelper.WriteLog("快捷键未来之窗切换翻页:启用", "翻页");
+
+
+
+                    未来之窗StartPageTurn(1);
+
+                   // _pageTurnEffect.Progress = 0.1f;
+
+                //    Log_Engine.write_logV2("动画", "改变1", "进度：" + 未来之窗_属性触发处理.未来之窗_东方仙盟_仙盟创梦_录像_特效翻页模式);
+
+                //    东方仙盟_LogHelper.WriteLog("快捷键未来之窗切换翻页:启用", "翻页");
+
+                    //  _viewModel.SelectedTool = Tools;// InkCanvas.e;
+                    // _viewModel.Tools = Tools;// InkCanvas.e;
+                    // _viewModel.SelectedTool=
+                    未来之窗StartPageTurn(1);
+                    break;
+
+                case "N":
+                    // 鼠标模式：清空画布 + 禁用绘制
+
+                  //  东方仙盟_LogHelper.WriteLog("快捷键未来之窗切换翻页:启用", "翻页");
+                    Log_Engine.write_logV2("动画", "改变1", "进度：" + 未来之窗_属性触发处理.未来之窗_东方仙盟_仙盟创梦_录像_特效翻页模式);
+
+
+                    break;
+            }
         }
     }
 }
