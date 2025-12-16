@@ -1,5 +1,6 @@
 ﻿using System;
 using System.IO;
+using System.Reactive.Linq;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Controls.Primitives;
@@ -8,6 +9,7 @@ using System.Windows.Interop;
 using System.Windows.Media;
 using Captura.ViewModels;
 using Captura.Windows.未来之窗;
+using CyberWin.CSHARP.YNWLZC.FairyAllianceVOS.CyberPHP;
 using CyberWin.CSHARP.YNWLZC.FairyAllianceVOS.CyberWinOSHandler;
 using SharpDX;
 using SharpDX.Direct3D9;
@@ -160,6 +162,9 @@ namespace Captura
             UpdateBrushModeByGlobalSetting();
         }
 
+        //2025-12-15
+        // 将 System.Drawing.Color 转换为 System.Windows.Media.Color
+       
         /// <summary>
         /// 根据全局变量更新笔刷模式
         /// </summary>
@@ -176,7 +181,24 @@ namespace Captura
                     InkCanvas.Cursor = Cursors.Pen;
                     InkCanvas.Background = new SolidColorBrush(Color.FromArgb(1, 0, 0, 0));
                     //base.OnRenderSizeChanged(SizeInfo);
+                   // InkCanvas.FORE
+                   if(Public_Var.未来之窗_东方仙盟_仙盟创梦_粉笔画笔颜色 == System.Drawing.Color.Black)
+                    {
+                        // InkCanvas.
+                        //   .BrushColor
+                        //  .Subscribe(M => InkCanvas.DefaultDrawingAttributes.Color = M);
+                        //  InkCanvas.BrushColor.
+                      //  _viewModel.BrushColor.Subscribe((Color)Public_Var.未来之窗_东方仙盟_仙盟创梦_粉笔画笔颜色);
+                    }
+                    else
+                    {
+                        //  InkCanvas.DefaultDrawingAttributes
+                        System.Drawing.Color c = Public_Var.未来之窗_东方仙盟_仙盟创梦_粉笔画笔颜色;
+                       Color 转换颜色= Color.FromArgb(c.A, c.R, c.G, c.B);
+                        InkCanvas.DefaultDrawingAttributes.Color = 转换颜色;
 
+                      //  _viewModel.BrushColor.Subscribe(ToWpfColor(Public_Var.未来之窗_东方仙盟_仙盟创梦_粉笔画笔颜色));
+                    }
 
                     东方仙盟_LogHelper.WriteLog("快捷键未来之窗切换画笔:启用", "笔刷");
 

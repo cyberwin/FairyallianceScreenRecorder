@@ -271,8 +271,8 @@
                                
         Width="70" HorizontalAlignment="Center" FontSize="11"/>
                         <Button x:Name="PageTurnRightButton"
-        Content="右翻书"
-        ToolTip="开始右→左翻书特效"
+        Content="录制工具栏"
+        ToolTip="录制工具栏"
         Click="PageTurnRightButton_Click"
                                 Padding="0"
                                  BorderThickness="1"

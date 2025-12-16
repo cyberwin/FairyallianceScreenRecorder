@@ -4,12 +4,14 @@ using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Forms;
 using System.Windows.Input;
+using Captura.CyberWin_Main;
 using Captura.Models;
 using Captura.ViewModels;
 using Captura.Windows.未来之窗;
 using CyberWin.CSHARP.YNWLZC.FairyAllianceVOS.CyberPHP;
 using CyberWin.CSHARP.YNWLZC.FairyAllianceVOS.CyberPHP.CyberWinPC.Helper.Loger;
 using CyberWin.CSHARP.YNWLZC.FairyAllianceVOS.CyberWinOSHandler;
+using MaterialDesignThemes.Wpf;
 
 namespace Captura
 {
@@ -205,9 +207,172 @@ namespace Captura
             //  {
             //     screenRecorder.StartPageTurn(direction: 1);
             // }
-            东方仙盟_LogHelper.WriteLog("右:", "翻书");
-            未来之窗_属性触发处理.未来之窗_东方仙盟_仙盟创梦_录像_特效翻页模式 = "Y";
+            //东方仙盟_LogHelper.WriteLog("右:", "翻书");
+            // 未来之窗_属性触发处理.未来之窗_东方仙盟_仙盟创梦_录像_特效翻页模式 = "Y";
+            东方仙盟_LogHelper.WriteLog("工具栏", "cyberwinhandle");
+            CyberWin_FloatingToolbarWindow.ShowWindow();
+
+            // 当窗口创建后，绑定事件
+            if (CyberWin_FloatingToolbarWindow._instance != null)
+            {
+                var viewModel = CyberWin_FloatingToolbarWindow._instance.DataContext as CyberWin_FloatingToolbarViewModel;
+                if (viewModel != null)
+                {
+                    BindToolbarEvents(viewModel);
+                }
+            }
         }
+
+        private void BindToolbarEvents(CyberWin_FloatingToolbarViewModel viewModel)
+        {
+            // 绑定录制命令
+          //  viewModel.OnStartRecording += () => _recorderViewModel.StartCommand.Execute(null);
+          //  viewModel.OnPauseRecording += () => _recorderViewModel.PauseCommand.Execute(null);
+          //  viewModel.OnStopRecording += () => _recorderViewModel.StopCommand.Execute(null);
+
+            // 绑定放大镜命令
+            viewModel.OnStartRecording += () =>
+            {
+                // 调用您已经做好的放大镜切换逻辑
+                // 例如：_magnifierModule.Toggle();
+                东方仙盟_LogHelper.WriteLog("OnStartRecording", "cyberwinhandle");
+               // _recordingViewModel.RecordCommand.ExecuteIfCan();
+                _helper.RecordingViewModel.RecordCommand.ExecuteIfCan();
+
+            };
+            // 绑定放大镜命令
+            viewModel.OnPauseRecording += () =>
+            {
+                // 调用您已经做好的放大镜切换逻辑
+                // 例如：_magnifierModule.Toggle();
+                东方仙盟_LogHelper.WriteLog("OnPauseRecording", "cyberwinhandle");
+                //  _recordingViewModel.PauseCommand.ExecuteIfCan();
+                _helper.RecordingViewModel.PauseCommand.ExecuteIfCan();
+            };
+            // 绑定放大镜命令
+            viewModel.OnStopRecording += () =>
+            {
+                // 调用您已经做好的放大镜切换逻辑
+                // 例如：_magnifierModule.Toggle();
+                东方仙盟_LogHelper.WriteLog("OnStopRecording", "cyberwinhandle");
+                //_helper.RecordingViewModel.RecordCommand..ExecuteIfCan();
+              //  _helper.RecordingViewModel.StopRecording();
+            };
+
+            // 绑定放大镜命令
+            viewModel.OnToggleMagnifier += () =>
+            {
+                // 调用您已经做好的放大镜切换逻辑
+                // 例如：_magnifierModule.Toggle();
+             //   东方仙盟_LogHelper.WriteLog("OnToggleMagnifier放大镜", "cyberwinhandle");
+                //未来之窗_东方仙盟_仙盟创梦_录像_鼠标聚焦mouseLens
+                //  Public_Var.
+               // 东方仙盟_LogHelper.WriteLog("鼠标放大原始:" + Public_Var.未来之窗_东方仙盟_仙盟创梦_录像_鼠标聚焦mouseLens, "快捷键");
+
+                // var lensVm = ServiceProvider.Get<CyberWin_MouseLensViewModel>();
+                //    public static string 未来之窗_东方仙盟_仙盟创梦_录像_鼠标聚焦mouseLens = "Y";
+                if (Public_Var.未来之窗_东方仙盟_仙盟创梦_录像_鼠标聚焦mouseLens.Equals("Y") == true)
+                {
+                    Public_Var.未来之窗_东方仙盟_仙盟创梦_录像_鼠标聚焦mouseLens = "N";
+                    viewModel.ManualIconKind = PackIconKind.MagnifyMinus;
+                   // ManualIconKind
+                   // viewModel .SetIconManually(PackIconKind.MagnifyMinus);
+                }
+                else
+                {
+                    Public_Var.未来之窗_东方仙盟_仙盟创梦_录像_鼠标聚焦mouseLens = "Y";
+                   // viewModel.SetIconManually(PackIconKind.MagnifyAdd);
+                    viewModel.ManualIconKind = PackIconKind.MagnifyAdd;
+                }
+                //东方仙盟_LogHelper.WriteLog("鼠标放大原始:" + Public_Var.未来之窗_东方仙盟_仙盟创梦_录像_鼠标聚焦mouseLens, "快捷键");
+
+
+            };
+
+            /*
+             * 
+             *  东方仙盟_LogHelper.WriteLog("快捷键未来之窗切换画笔:", "快捷键");
+
+                        if (Public_Var.未来之窗_东方仙盟_仙盟创梦_录像_未来之窗笔刷模式.Equals("Y") == true)
+                        {
+                            未来之窗_属性触发处理.未来之窗_东方仙盟_仙盟创梦_录像_未来之窗笔刷模式 = "N";
+                            东方仙盟_LogHelper.WriteLog("快捷键未来之窗切换画笔:关闭", "快捷键");
+                        }
+                        else
+                        {
+                            // Public_Var.未来之窗_东方仙盟_仙盟创梦_录像_未来之窗笔刷模式 = "Y";
+                            未来之窗_属性触发处理.未来之窗_东方仙盟_仙盟创梦_录像_未来之窗笔刷模式 = "Y";
+                            东方仙盟_LogHelper.WriteLog("快捷键未来之窗切换画笔:打开", "快捷键");
+                        }
+*/
+
+            viewModel.OnTogglePencilTech += () =>
+            {
+                // 调用您已经做好的放大镜切换逻辑
+                // 例如：_magnifierModule.Toggle();
+             //   东方仙盟_LogHelper.WriteLog("OnTogglePencilTech-粉笔模式", "cyberwinhandle");
+                //未来之窗_东方仙盟_仙盟创梦_录像_鼠标聚焦mouseLens
+                //  Public_Var.
+                未来之窗_属性触发处理.未来之窗_东方仙盟_仙盟创梦_录像_未来之窗笔刷模式 = "Y";
+                // 东方仙盟_LogHelper.WriteLog("快捷键未来之窗切换画笔:打开", "快捷键");
+                //  东方仙盟_LogHelper.WriteLog("快捷键未来之窗切换画笔:打开", "cyberwinhandle");
+
+                //   CyberWin_FloatingToolbarWindow._instance.EnsureTopmost();
+                CyberWin_FloatingToolbarWindow._instance.未来之窗启动顶部(); // 显示时启动计时器
+
+            };
+
+            // 绑定光标模式命令
+            viewModel.OnToggleCursor += () =>
+            {
+                // 调用您已经做好的光标模式切换逻辑
+                // 例如：GlobalSettings.未来之窗笔刷模式 = "N";
+              //  东方仙盟_LogHelper.WriteLog("OnToggleCursor", "cyberwinhandle");
+                未来之窗_属性触发处理.未来之窗_东方仙盟_仙盟创梦_录像_未来之窗笔刷模式 = "N";
+                // 东方仙盟_LogHelper.WriteLog("快捷键未来之窗切换画笔:打开", "快捷键");
+                // 东方仙盟_LogHelper.WriteLog("快捷键未来之窗切换画笔:关闭", "cyberwinhandle");
+               // CyberWin_FloatingToolbarWindow._instance.EnsureTopmost();
+                CyberWin_FloatingToolbarWindow._instance.未来之窗停止顶部(); // 显示时启动计时器
+
+            };
+
+            // 绑定颜色选择和画笔命令
+            /*
+            viewModel.OnColorSelected += (selectedColor) =>
+            {
+                // 将选择的颜色应用到全局设置
+                // 这里假设笔刷颜色设置在 Keystrokes 中
+                //  Settings.Instance.Keystrokes.Color = selectedColor;
+
+                // 颜色设置后，激活笔刷模式
+                //  GlobalSettings.未来之窗笔刷模式 = "Y";
+                东方仙盟_LogHelper.WriteLog("OnToggleCursor", "cyberwinhandle");
+            };
+            */
+
+            //OnTogglePencilPalette
+            viewModel.OnColorSelected += (selectedColor) =>
+            {
+                // 将选择的颜色应用到全局设置
+                // 这里假设笔刷颜色设置在 Keystrokes 中
+                //  Settings.Instance.Keystrokes.Color = selectedColor;
+
+                // 颜色设置后，激活笔刷模式
+                //  GlobalSettings.未来之窗笔刷模式 = "Y";
+             //   东方仙盟_LogHelper.WriteLog("OnToggleCursor", "cyberwinhandle");
+
+                //_viewModel.BrushColor.Value = Color.FromRgb(255, 0, 0); // 红色
+                // _helper.RecordingViewModel.Settings.
+                Public_Var.未来之窗_东方仙盟_仙盟创梦_粉笔画笔颜色 = selectedColor;
+
+                // .BrushColor
+                //  .Subscribe(M => InkCanvas.DefaultDrawingAttributes.Color = M);
+                //_helper.RecordingViewModel.br
+            };
+
+        }
+
+        public ICommand ShowToolbarCommand { get; }
 
     }
 }

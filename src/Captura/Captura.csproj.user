@@ -2,6 +2,9 @@
 <Project ToolsVersion="Current" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <PropertyGroup />
   <ItemGroup>
+    <Compile Update="CyberWin_Main\CyberWin_FloatingToolbarWindow.xaml.cs">
+      <SubType>Code</SubType>
+    </Compile>
     <Compile Update="Pages\CyberWin_LensSettingsPage.xaml.cs">
       <SubType>Code</SubType>
     </Compile>
@@ -13,6 +16,9 @@
     </Compile>
   </ItemGroup>
   <ItemGroup>
+    <Page Update="CyberWin_Main\CyberWin_FloatingToolbarWindow.xaml">
+      <SubType>Designer</SubType>
+    </Page>
     <Page Update="Pages\CyberWin_LensSettingsPage.xaml">
       <SubType>Designer</SubType>
     </Page>
