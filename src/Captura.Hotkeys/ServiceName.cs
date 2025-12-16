@@ -57,5 +57,8 @@
         ShowMainWindow,
 
         ToggleRegionPicker
+            , wlzcToggleBrushHot
+            , wlzcToggleMouseLens // 新增：切换鼠标透镜
+            ,未来之窗_交互_翻书
     }
 }

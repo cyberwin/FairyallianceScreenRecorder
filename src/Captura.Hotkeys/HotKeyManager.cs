@@ -17,6 +17,13 @@ namespace Captura.Hotkeys
 
         static string GetFilePath() => Path.Combine(ServiceProvider.SettingsDir, "Hotkeys.json");
 
+        //未来之窗
+
+        // 快捷键钩子（全局监听按键）
+       // private readonly GlobalHotkey _hotkey;
+        // 画笔切换回调（告诉主界面要切换画笔状态）
+        private Action _onToggleBrush;
+
         public HotKeyManager(IHotkeyListener HotkeyListener,
             IEnumerable<IHotkeyActor> HotkeyActors)
         {
