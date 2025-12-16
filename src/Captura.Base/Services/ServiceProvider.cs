@@ -22,7 +22,8 @@ namespace Captura
             {
                 if (_settingsDir == null)
                 {
-                    var localSettings = Path.Combine(AppDir, "Settings");
+                    //  var localSettings = Path.Combine(AppDir, "Settings");
+                    var localSettings = Path.Combine(AppDir, "CyberWinVOS","cyberconfig");
 
                     if (Directory.Exists(localSettings))
                     {
@@ -32,7 +33,19 @@ namespace Captura
                     {
                         var appDataPath = Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData);
 
-                        _settingsDir = Path.Combine(appDataPath, nameof(Captura));
+                       // _settingsDir = Path.Combine(appDataPath, nameof(Captura));
+                       //2025-12-08
+                        _settingsDir = Path.Combine(appDataPath, "FairyallianceScreenRecorder");
+                        //2025-12-11 修改配置路径
+                        //CyberWinVOS
+                        // 获取当前程序集（exe）的完整路径（包含exe文件名）
+                      //  string exeFullPath = Assembly.GetExecutingAssembly().Location;
+                        // 获取exe所在的目录（去掉文件名，只保留路径）
+                      //  string exeDirectory = System.IO.Path.GetDirectoryName(exeFullPath);
+
+                     //   _settingsDir = Path.Combine(exeDirectory, "CyberWinVOS");
+
+
                     }
                 }
 
