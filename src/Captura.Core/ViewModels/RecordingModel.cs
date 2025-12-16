@@ -19,7 +19,7 @@ namespace Captura.ViewModels
     public class RecordingModel : ViewModelBase, IDisposable
     {
         #region Fields
-        IRecorder _recorder;
+         IRecorder _recorder;
         readonly SyncContextManager _syncContext = new SyncContextManager();
 
         readonly ISystemTray _systemTray;
@@ -484,6 +484,19 @@ namespace Captura.ViewModels
             if (!webcamMode)
             {
                 yield return new MousePointerOverlay(Settings.MousePointerOverlay);
+
+                // 添加        // 添加透镜放大覆盖层（在这里插入）
+                //
+               // 豆包太傻第900版本_LensSettings 系统配置= Settings.东方仙盟鼠标聚焦;
+              //  if (Settings.东方仙盟鼠标聚焦.)
+             //   {
+
+             //   }
+
+                yield return new 豆包太傻第900版本_LensMagnifierOverlay(
+                  Settings.东方仙盟鼠标聚焦,//  new 豆包太傻第900版本_LensSettings(),
+                    ServiceProvider.Get<IPlatformServices>()
+                );
             }
 
             var clickSettings = webcamMode
@@ -554,6 +567,13 @@ namespace Captura.ViewModels
             AfterRecording();
 
             await task;
+        }
+
+
+        public void 未来之窗_特效_启动翻页作废()
+        {
+            //  _recorder.Stop()
+           // _recorder.
         }
     }
 }
