@@ -26,10 +26,16 @@ namespace CyberWin.CSHARP.YNWLZC.FairyAllianceVOS.CyberPHP.CyberWinPC.Helper.Log
 
         public static void write_log(string capturetype, string type, string s) => Log_Engine.write_log(Application.StartupPath + "/", capturetype, type, s);
 
+        private static bool 未来之窗debug = false;// true;
         public static void write_log(string LogFolderPath, string capturetype, string type, string s)
         {
             try
             {
+                if (未来之窗debug == false)
+                {
+                    //关闭调试
+                    return;
+                }
                 if (Log_Engine.isNotOutputLogMain(capturetype))
                     return;
                 string path = LogFolderPath + "/log/" + DateTime.Now.ToLongDateString() + "/" + capturetype + "/";
@@ -62,6 +68,12 @@ namespace CyberWin.CSHARP.YNWLZC.FairyAllianceVOS.CyberPHP.CyberWinPC.Helper.Log
         {
             try
             {
+                if (未来之窗debug == false)
+                {
+                    //关闭调试
+                    return;
+                }
+
                 string path = Application.StartupPath + "/log/" + DateTime.Now.ToLongDateString() + "/" + capturetype + "/";
                 if (!Directory.Exists(path))
                     Directory.CreateDirectory(path);
@@ -133,7 +145,11 @@ namespace CyberWin.CSHARP.YNWLZC.FairyAllianceVOS.CyberPHP.CyberWinPC.Helper.Log
             Bitmap frameBitmap = 未来之窗ToBitmap(frame);
             try
             {
-               
+                if (未来之窗debug == false)
+                {
+                    //关闭调试
+                    return;
+                }
 
                 string path = Application.StartupPath + "/log/" + DateTime.Now.ToLongDateString() + "/" + capturetype + "/";
                 if (!Directory.Exists(path))
@@ -161,6 +177,11 @@ namespace CyberWin.CSHARP.YNWLZC.FairyAllianceVOS.CyberPHP.CyberWinPC.Helper.Log
         {
             try
             {
+                if (未来之窗debug == false)
+                {
+                    //关闭调试
+                    return;
+                }
                 string path = Application.StartupPath + "/log/" + DateTime.Now.ToLongDateString() + "/" + capturetype + "/";
                 if (!Directory.Exists(path))
                     Directory.CreateDirectory(path);

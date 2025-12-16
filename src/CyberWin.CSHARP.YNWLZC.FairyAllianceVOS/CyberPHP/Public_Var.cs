@@ -7,6 +7,7 @@ using System.Windows.Forms;
 using static System.Net.Mime.MediaTypeNames;
 //using System.Windows.Forms;
 using  Captura.Windows;
+using System.Drawing;
 
 namespace CyberWin.CSHARP.YNWLZC.FairyAllianceVOS.CyberPHP
 {
@@ -84,5 +85,7 @@ namespace CyberWin.CSHARP.YNWLZC.FairyAllianceVOS.CyberPHP
 
         //豆包太傻第900版本_LensMagnifierOverlay.cs
         public static string 未来之窗_东方仙盟_仙盟创梦_录像_鼠标聚焦mouseLens = "Y";
+        // System.Windows.Media.Color
+        public static   Color 未来之窗_东方仙盟_仙盟创梦_粉笔画笔颜色 = Color.Black;
     }
 }
