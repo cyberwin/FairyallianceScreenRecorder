@@ -58,7 +58,7 @@ Portable and Setup builds for the latest release can be downloaded from [here][l
 ### Chocolatey
 
 ```powershell
-choco install captura -y
+choco install FairyallianceScreenRecorder -y
 ```
 
 ### Dev Builds
