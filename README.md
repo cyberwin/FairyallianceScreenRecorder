@@ -1,4 +1,5 @@
-![Captura](https://mathewsachin.github.io/Captura/assets/Banner.png)
+
+<img width="150" height="150" alt="icon_fairyalliapp150" src="https://github.com/user-attachments/assets/744f303c-1ce5-41ac-814b-3cbc4d11912c" />
 
 [![Master Build Status](https://img.shields.io/appveyor/ci/MathewSachin/Captura/master.svg?style=flat-square&logo=appveyor)](https://ci.appveyor.com/project/MathewSachin/Captura)
 [![MIT License](https://img.shields.io/badge/license-MIT-blue.svg?style=flat-square)](LICENSE.md)
@@ -10,9 +11,11 @@
 
 &copy; [Copyright 2019](LICENSE.md) Mathew Sachin
 
+&copy; Amend by CyberSnow adapt phone techer
+
 :link: <https://mathewsachin.github.io/Captura/>
 
-Capture Screen, WebCam, Audio, Cursor, Mouse Clicks and Keystrokes.
+code from Capture Screen, WebCam, Audio, Cursor, Mouse Clicks and Keystrokes.
 
 <a href="docs/Screenshots"><img src="https://mathewsachin.github.io/Captura/assets/ScreenShots/Home.png" style="max-width: 200px"></a>
 
