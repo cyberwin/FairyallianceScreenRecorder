@@ -47,9 +47,7 @@ show Magnification effect
 - Capture Mouse Clicks or Keystrokes
 - Mix Audio recorded from Microphone and Speaker Output
 - Capture from WebCam.
-- Can be used from [Command-line](https://mathewsachin.github.io/cyberwin/FairyallianceScreenRecorder/cmdline) (*BETA*).
-- Available in [multiple languages](https://mathewsachin.github.io/cyberwin/FairyallianceScreenRecorder/translation)
-- Configurable [Hotkeys](https://mathewsachin.github.io/cyberwin/FairyallianceScreenRecorder/hotkeys)
+ 
 
 ## Installation
 
