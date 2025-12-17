@@ -17,7 +17,26 @@
 
 code from Capture Screen, WebCam, Audio, Cursor, Mouse Clicks and Keystrokes.
 
-<a href="docs/Screenshots"><img src="https://mathewsachin.github.io/Captura/assets/ScreenShots/Home.png" style="max-width: 200px"></a>
+main windows 
+
+![01](https://github.com/user-attachments/assets/13cc663d-e114-4c93-b8e4-7821ceacfb7c)
+it is can hide and use right float tools
+![05](https://github.com/user-attachments/assets/7d64e74a-db9f-422a-88e6-e289cdae109e)
+
+shotkeys
+![04](https://github.com/user-attachments/assets/10a30c97-279b-4eae-964f-37cbf362fbdb)
+
+adapter  Magnifying glass ，Videos recorded on a regular computer are usually unclear when posted on a phone and require a second round of editing. With this, no second editing is needed; the video is ready in one go, saving editing costs and at least 20 minutes each time.
+
+![03](https://github.com/user-attachments/assets/4595d823-9388-4851-82c8-53fdeceb004e)
+
+multi setting
+
+![02](https://github.com/user-attachments/assets/3acfbf4d-686b-4ad5-94ff-d498741be4c7)
+
+show Magnification effect
+
+![06](https://github.com/user-attachments/assets/4ef5770a-00a7-49ce-9df5-ea0a0020d6fa)
 
 ## Features
 
@@ -28,13 +47,13 @@ code from Capture Screen, WebCam, Audio, Cursor, Mouse Clicks and Keystrokes.
 - Capture Mouse Clicks or Keystrokes
 - Mix Audio recorded from Microphone and Speaker Output
 - Capture from WebCam.
-- Can be used from [Command-line](https://mathewsachin.github.io/Captura/cmdline) (*BETA*).
-- Available in [multiple languages](https://mathewsachin.github.io/Captura/translation)
-- Configurable [Hotkeys](https://mathewsachin.github.io/Captura/hotkeys)
+- Can be used from [Command-line](https://mathewsachin.github.io/cyberwin/FairyallianceScreenRecorder/cmdline) (*BETA*).
+- Available in [multiple languages](https://mathewsachin.github.io/cyberwin/FairyallianceScreenRecorder/translation)
+- Configurable [Hotkeys](https://mathewsachin.github.io/cyberwin/FairyallianceScreenRecorder/hotkeys)
 
 ## Installation
 
-[latest]: https://github.com/MathewSachin/Captura/releases/latest
+[latest]: https://github.com/cyberwin/FairyallianceScreenRecorder/releases/latest
 
 Portable and Setup builds for the latest release can be downloaded from [here][latest].
 
