@@ -13,7 +13,7 @@
 
 &copy; Amend by CyberSnow adapt phone techer
 
-:link: <https://mathewsachin.github.io/Captura/>
+:link: <https://github.com/cyberwin/FairyallianceScreenRecorder>
 
 code from Capture Screen, WebCam, Audio, Cursor, Mouse Clicks and Keystrokes.
 
