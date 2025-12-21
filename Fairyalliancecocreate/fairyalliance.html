@@ -1,0 +1,304 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>模拟后台管理蜜罐</title>
+    <style>
+        * {margin: 0; padding: 0; box-sizing: border-box; font-family: Arial, sans-serif;}
+        body {background-color: #f5f5f5; padding: 20px;}
+        .container {max-width: 800px; margin: 0 auto; background: #fff; padding: 30px; border-radius: 8px; box-shadow: 0 0 10px rgba(0,0,0,0.1);}
+        .tab-container {margin-top: 20px;}
+        .tab-buttons {display: flex; border-bottom: 1px solid #ddd;}
+        .tab-btn {padding: 10px 20px; border: none; background: transparent; cursor: pointer; font-size: 14px;}
+        .tab-btn.active {border-bottom: 2px solid #007bff; color: #007bff; font-weight: bold;}
+        .tab-content {padding: 20px 0; display: none;}
+        .tab-content.active {display: block;}
+        .login-box {max-width: 400px; margin: 50px auto; text-align: center;}
+        .login-box input {width: 100%; padding: 10px; margin: 10px 0; border: 1px solid #ddd; border-radius: 4px;}
+        .login-box button {width: 100%; padding: 10px; background: #007bff; color: #fff; border: none; border-radius: 4px; cursor: pointer;}
+        .file-item {padding: 10px; border-bottom: 1px dashed #eee; display: flex; justify-content: space-between; align-items: center;}
+        .db-item {padding: 8px 0; border-bottom: 1px solid #eee;}
+        .operation-btn {padding: 5px 10px; border: 1px solid #ddd; border-radius: 4px; cursor: pointer; font-size: 12px; margin-right: 5px;}
+        .upload-area {margin: 15px 0; padding: 20px; border: 1px dashed #ddd; border-radius: 4px; text-align: center;}
+        .user-info {text-align: right; margin-bottom: 20px; color: #666;}
+        .logout-btn {color: #ff4444; cursor: pointer; text-decoration: underline;}
+        .log-box {margin-top: 20px; padding: 10px; background: #f8f8f8; border-radius: 4px; max-height: 200px; overflow-y: auto; font-size: 12px; color: #333;}
+    </style>
+</head>
+<body>
+    <!-- 登录页面 -->
+    <div class="login-box" id="loginPage">
+        <h2>系统后台管理</h2>
+        <input type="text" id="loginUser" placeholder="请输入账号（任意）">
+        <input type="password" id="loginPass" placeholder="请输入密码（任意）">
+        <button onclick="handleLogin()">登录系统</button>
+    </div>
+
+    <!-- 蜜罐主页面 -->
+    <div class="container" id="mainPage" style="display: none;">
+        <div class="user-info">
+            当前登录：<span id="currentUser"></span> | 
+            登录时间：<span id="loginTime"></span> | 
+            <span class="logout-btn" onclick="handleLogout()">退出登录</span>
+        </div>
+
+        <div class="tab-container">
+            <div class="tab-buttons">
+                <button class="tab-btn active" onclick="switchTab('fileTab')">文件管理</button>
+                <button class="tab-btn" onclick="switchTab('dbTab')">数据库管理</button>
+                <button class="tab-btn" onclick="switchTab('logTab')">操作日志</button>
+            </div>
+
+            <!-- 文件管理标签页 -->
+            <div class="tab-content active" id="fileTab">
+                <h3>服务器文件列表</h3>
+                <div id="fileList"></div>
+                <div class="upload-area">
+                    <input type="file" id="fileUpload" onchange="handleFileUpload()">
+                    <p style="margin-top: 10px; color: #666;">支持上传配置文件、备份包等</p>
+                </div>
+            </div>
+
+            <!-- 数据库管理标签页 -->
+            <div class="tab-content" id="dbTab">
+                <h3>数据库表列表</h3>
+                <div id="dbList"></div>
+                <div style="margin-top: 15px;">
+                    <input type="text" id="sqlInput" placeholder="输入SQL语句（模拟执行）" style="width: 60%; padding: 8px; border: 1px solid #ddd;">
+                    <button class="operation-btn" onclick="handleSqlExec()">执行SQL</button>
+                </div>
+            </div>
+
+            <!-- 操作日志标签页 -->
+            <div class="tab-content" id="logTab">
+                <h3>本地操作日志</h3>
+                <div class="log-box" id="localLogBox"></div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // ========== 配置项 ==========
+        // AJAX日志上报地址（替换为你的服务器接收接口）
+        const LOG_REPORT_URL = "http://你的服务器IP:端口/receive_honey_log.php";
+        // 模拟文件列表
+        const FAKE_FILES = [
+            {name: "system.ini", size: "2.4KB", time: "2025-12-22 10:30"},
+            {name: "user_backup.db", size: "18.7MB", time: "2025-12-21 16:45"},
+            {name: "config_backup.zip", size: "126MB", time: "2025-12-20 09:15"},
+            {name: "log.txt", size: "5.2KB", time: "2025-12-19 14:20"}
+        ];
+        // 模拟数据库表列表
+        const FAKE_DB_TABLES = [
+            {name: "sys_user", desc: "系统用户表", rows: 128},
+            {name: "sys_config", desc: "系统配置表", rows: 32},
+            {name: "biz_order", desc: "业务订单表", rows: 5689},
+            {name: "biz_product", desc: "商品信息表", rows: 1256}
+        ];
+
+        // ========== 核心功能 ==========
+        // 1. 登录处理：任意账号密码，localStorage存档
+        function handleLogin() {
+            const username = document.getElementById("loginUser").value || "admin";
+            const password = document.getElementById("loginPass").value || "123456";
+            const loginTime = new Date().toLocaleString();
+            
+            // 本地存储登录信息
+            const userData = {username, password, loginTime};
+            localStorage.setItem("honey_login_info", JSON.stringify(userData));
+            
+            // 记录登录日志
+            const loginLog = createLog("login", {username, password});
+            saveLogToLocal(loginLog);
+            reportLogToServer(loginLog);
+
+            // 切换到主页面
+            document.getElementById("loginPage").style.display = "none";
+            document.getElementById("mainPage").style.display = "block";
+            document.getElementById("currentUser").innerText = username;
+            document.getElementById("loginTime").innerText = loginTime;
+
+            // 渲染页面数据
+            renderFileList();
+            renderDbList();
+            renderLocalLog();
+        }
+
+        // 2. 退出登录
+        function handleLogout() {
+            const userInfo = JSON.parse(localStorage.getItem("honey_login_info"));
+            const logoutLog = createLog("logout", {username: userInfo.username});
+            saveLogToLocal(logoutLog);
+            reportLogToServer(logoutLog);
+
+            localStorage.removeItem("honey_login_info");
+            localStorage.removeItem("honey_operation_logs");
+            location.reload();
+        }
+
+        // 3. 切换标签页
+        function switchTab(tabId) {
+            // 切换按钮状态
+            document.querySelectorAll(".tab-btn").forEach(btn => btn.classList.remove("active"));
+            event.target.classList.add("active");
+            // 切换内容状态
+            document.querySelectorAll(".tab-content").forEach(tab => tab.classList.remove("active"));
+            document.getElementById(tabId).classList.add("active");
+            // 刷新日志标签页
+            if (tabId === "logTab") renderLocalLog();
+        }
+
+        // ========== 模拟功能 - 文件管理 ==========
+        function renderFileList() {
+            const fileListEl = document.getElementById("fileList");
+            fileListEl.innerHTML = "";
+            FAKE_FILES.forEach(file => {
+                fileListEl.innerHTML += `
+                    <div class="file-item">
+                        <div>
+                            <strong>${file.name}</strong> - ${file.size} - ${file.time}
+                        </div>
+                        <div>
+                            <button class="operation-btn" onclick="handleFileDownload('${file.name}')">下载</button>
+                            <button class="operation-btn" onclick="handleFileDelete('${file.name}')">删除</button>
+                        </div>
+                    </div>
+                `;
+            });
+        }
+
+        function handleFileUpload() {
+            const file = document.getElementById("fileUpload").files[0];
+            if (!file) return;
+            const uploadLog = createLog("file_upload", {fileName: file.name, fileSize: file.size + "B", fileType: file.type});
+            saveLogToLocal(uploadLog);
+            reportLogToServer(uploadLog);
+            alert(`模拟上传成功：${file.name}`);
+            document.getElementById("fileUpload").value = "";
+            renderFileList();
+        }
+
+        function handleFileDownload(fileName) {
+            const downloadLog = createLog("file_download", {fileName});
+            saveLogToLocal(downloadLog);
+            reportLogToServer(downloadLog);
+            alert(`模拟下载：${fileName}（文件不存在）`);
+        }
+
+        function handleFileDelete(fileName) {
+            const deleteLog = createLog("file_delete", {fileName});
+            saveLogToLocal(deleteLog);
+            reportLogToServer(deleteLog);
+            alert(`模拟删除成功：${fileName}`);
+            renderFileList();
+        }
+
+        // ========== 模拟功能 - 数据库管理 ==========
+        function renderDbList() {
+            const dbListEl = document.getElementById("dbList");
+            dbListEl.innerHTML = "";
+            FAKE_DB_TABLES.forEach(table => {
+                dbListEl.innerHTML += `
+                    <div class="db-item">
+                        <strong>${table.name}</strong> - ${table.desc} - 共${table.rows}条数据
+                        <div style="margin-top: 5px;">
+                            <button class="operation-btn" onclick="handleDbQuery('${table.name}')">查询数据</button>
+                            <button class="operation-btn" onclick="handleDbTruncate('${table.name}')">清空表</button>
+                        </div>
+                    </div>
+                `;
+            });
+        }
+
+        function handleDbQuery(tableName) {
+            const queryLog = createLog("db_query", {tableName, sql: `SELECT * FROM ${tableName} LIMIT 10`});
+            saveLogToLocal(queryLog);
+            reportLogToServer(queryLog);
+            alert(`模拟查询表【${tableName}】成功，返回10条数据`);
+        }
+
+        function handleDbTruncate(tableName) {
+            const truncateLog = createLog("db_truncate", {tableName, sql: `TRUNCATE TABLE ${tableName}`});
+            saveLogToLocal(truncateLog);
+            reportLogToServer(truncateLog);
+            alert(`模拟清空表【${tableName}】成功`);
+        }
+
+        function handleSqlExec() {
+            const sql = document.getElementById("sqlInput").value.trim();
+            if (!sql) {
+                alert("请输入SQL语句");
+                return;
+            }
+            const sqlLog = createLog("db_sql_exec", {sql});
+            saveLogToLocal(sqlLog);
+            reportLogToServer(sqlLog);
+            alert(`模拟执行SQL成功：${sql}`);
+            document.getElementById("sqlInput").value = "";
+        }
+
+        // ========== 日志管理 ==========
+        // 创建日志对象
+        function createLog(action, data) {
+            return {
+                timestamp: new Date().toISOString(),
+                action: action,
+                data: data,
+                userAgent: navigator.userAgent,
+                referrer: document.referrer,
+                honey_flag: "html_js_honeypot"
+            };
+        }
+
+        // 保存日志到localStorage
+        function saveLogToLocal(log) {
+            const oldLogs = JSON.parse(localStorage.getItem("honey_operation_logs") || "[]");
+            oldLogs.push(log);
+            localStorage.setItem("honey_operation_logs", JSON.stringify(oldLogs));
+        }
+
+        // 渲染本地日志
+        function renderLocalLog() {
+            const logBox = document.getElementById("localLogBox");
+            const logs = JSON.parse(localStorage.getItem("honey_operation_logs") || "[]");
+            logBox.innerHTML = "";
+            logs.forEach(log => {
+                logBox.innerHTML += `[${log.timestamp}] 操作：${log.action} | 数据：${JSON.stringify(log.data)}<br>`;
+            });
+        }
+
+        // AJAX上报日志到服务器
+        function reportLogToServer(log) {
+            if (!LOG_REPORT_URL) return;
+            try {
+                const xhr = new XMLHttpRequest();
+                xhr.open("POST", LOG_REPORT_URL, true);
+                xhr.setRequestHeader("Content-Type", "application/json");
+                xhr.send(JSON.stringify(log));
+                xhr.onload = function() {
+                    if (xhr.status === 200) console.log("日志上报成功");
+                };
+            } catch (e) {
+                console.error("日志上报失败：", e);
+            }
+        }
+
+        // ========== 页面初始化 ==========
+        window.onload = function() {
+            // 检查登录状态
+            const loginInfo = localStorage.getItem("honey_login_info");
+            if (loginInfo) {
+                const userData = JSON.parse(loginInfo);
+                document.getElementById("loginPage").style.display = "none";
+                document.getElementById("mainPage").style.display = "block";
+                document.getElementById("currentUser").innerText = userData.username;
+                document.getElementById("loginTime").innerText = userData.loginTime;
+                renderFileList();
+                renderDbList();
+                renderLocalLog();
+            }
+        };
+    </script>
+</body>
+</html>
